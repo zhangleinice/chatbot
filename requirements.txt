@@ -1,0 +1,15 @@
+huggingface-hub
+langchain
+torch
+torchvision
+transformers
+# faiss-gpu
+faiss-cpu
+gradio
+openai
+tiktoken
+spacy
+# tool
+# accelerate
+# diffusers
+# matplotlib
