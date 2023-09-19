@@ -8,7 +8,7 @@ from langchain.agents import tool
 
 llm = OpenAI(temperature=0)
 
-product_loader = CSVLoader('../data/faq/ecommerce_products.csv')
+product_loader = CSVLoader('data/faq/ecommerce_products.csv')
 
 product_documents = product_loader.load()
 

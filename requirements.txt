@@ -1,5 +1,5 @@
 huggingface-hub
-langchain
+langchain==0.0.294
 torch
 torchvision
 transformers
@@ -9,6 +9,7 @@ gradio
 openai
 tiktoken
 spacy
+diffusers
 # tool
 # accelerate
 # diffusers

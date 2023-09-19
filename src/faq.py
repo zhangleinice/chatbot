@@ -9,7 +9,7 @@ from langchain.agents import tool
 llm = OpenAI(temperature=0)
 
 # 问答llmchain
-loader = TextLoader('../data/faq/ecommerce_faq.txt')
+loader = TextLoader('data/faq/ecommerce_faq.txt')
 
 documents = loader.load()
 

@@ -1,10 +1,9 @@
-from faq import faq
-from order import search_order
-from prd_recommend import recommend_product
+from src.faq import faq
+from src.order import search_order
+from src.prd_recommend import recommend_product
 from langchain.agents import initialize_agent
 from langchain.memory import ConversationBufferMemory
 from langchain.chat_models import ChatOpenAI
-
 
 tools = [
     search_order,
@@ -26,13 +25,13 @@ conversation_agent = initialize_agent(
     verbose=True
 )
 
+
 # zero-shot-react-description：零样本
 # agent = initialize_agent(tools, llm, agent="zero-shot-react-description", verbose=True)
 
-
-question = "请问你们的货，能送到三亚吗？大概需要几天？"
-result = conversation_agent.run(question)
-print(result)
+# question = "请问你们的货，能送到三亚吗？大概需要几天？"
+# result = conversation_agent.run(question)
+# print(result)
 
 
 # question = "我想买一件衣服，想要在春天去公园穿，但是不知道哪个款式好看，你能帮我推荐一下吗？"

@@ -5,7 +5,8 @@ from src.app import create_demo
 
 def main():
     demo = create_demo()
-    demo.launch()
+
+    demo.launch(server_name="127.0.0.1", server_port=7861)
 
 
 if __name__ == "__main__":
