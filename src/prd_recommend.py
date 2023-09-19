@@ -1,10 +1,10 @@
 
 from langchain.document_loaders import CSVLoader
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 from langchain import VectorDBQA, OpenAI
 from langchain.agents import tool
+from models.model import embeddings_zh
 
 llm = OpenAI(temperature=0)
 
@@ -16,7 +16,7 @@ product_text_splitter = CharacterTextSplitter(chunk_size=1024, separator="\n")
 
 product_texts = product_text_splitter.split_documents(product_documents)
 
-product_search = FAISS.from_documents(product_texts, OpenAIEmbeddings())
+product_search = FAISS.from_documents(product_texts, embeddings_zh)
 
 product_chain = VectorDBQA.from_chain_type(
     llm=llm,

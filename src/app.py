@@ -6,7 +6,6 @@ from langchain import OpenAI
 from langchain.chains import ConversationChain
 from langchain.memory import ConversationSummaryBufferMemory
 from langchain.chat_models import ChatOpenAI
-from langchain.agents.tools import Tool
 from src.chatbot import conversation_agent
 
 openai.api_key = os.environ["OPENAI_API_KEY"]
