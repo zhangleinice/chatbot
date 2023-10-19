@@ -12,6 +12,6 @@ spacy
 diffusers
 sentence-transformers
 # tool
-# accelerate
+accelerate
 # diffusers
 # matplotlib

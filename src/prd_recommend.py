@@ -1,12 +1,12 @@
-
+# 商品推荐
 from langchain.document_loaders import CSVLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import FAISS
 from langchain import VectorDBQA, OpenAI
 from langchain.agents import tool
-from models.model import embeddings_zh
+from models.model import embeddings_zh, llama2
 
-llm = OpenAI(temperature=0)
+# llm = OpenAI(temperature=0)
 
 product_loader = CSVLoader('data/faq/ecommerce_products.csv')
 
@@ -18,8 +18,9 @@ product_texts = product_text_splitter.split_documents(product_documents)
 
 product_search = FAISS.from_documents(product_texts, embeddings_zh)
 
+# 使用 llama-2-7b-chat 商品推荐
 product_chain = VectorDBQA.from_chain_type(
-    llm=llm,
+    llm=llama2,
     vectorstore=product_search,
     verbose=True
 )

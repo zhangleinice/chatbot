@@ -1,11 +1,10 @@
 # 订单查询
-
-from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
-from langchain.chat_models import ChatOpenAI
-from langchain.agents import tool
 import re
 import json
+from langchain.prompts import PromptTemplate
+from langchain.chains import LLMChain
+from langchain.agents import tool
+from models.model import llama2
 
 ORDER_1 = "20230101ABC"
 ORDER_2 = "20230101EFG"
@@ -27,8 +26,10 @@ ORDER_2_DETAIL = {
 answer_order_info = PromptTemplate(
     template="请把下面的订单信息回复给用户： \n\n {order}?", input_variables=["order"]
 )
-answer_order_llm = LLMChain(llm=ChatOpenAI(
-    temperature=0),
+
+# 查询订单
+answer_order_llm = LLMChain(
+    llm=llama2,
     prompt=answer_order_info
 )
 

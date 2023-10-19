@@ -1,1 +1,4 @@
 venv/
+llm/
+__pycache__/
+*.pyc

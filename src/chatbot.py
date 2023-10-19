@@ -3,7 +3,8 @@ from src.order import search_order
 from src.prd_recommend import recommend_product
 from langchain.agents import initialize_agent
 from langchain.memory import ConversationBufferMemory
-from langchain.chat_models import ChatOpenAI
+# from langchain.chat_models import ChatOpenAI
+from models.model import llama2
 
 tools = [
     search_order,
@@ -11,15 +12,15 @@ tools = [
     faq
 ]
 
-chatllm = ChatOpenAI(temperature=0)
+# chatllm = ChatOpenAI(temperature=0)
 
 memory = ConversationBufferMemory(
     memory_key="chat_history", return_messages=True)
 
-# ai agent
+# llama2 进行 ai agent判断
 conversation_agent = initialize_agent(
     tools,
-    chatllm,
+    llama2,
     agent="conversational-react-description",
     memory=memory,
     verbose=True
