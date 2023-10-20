@@ -1,8 +1,7 @@
 # chatbot
-客服聊天机器人
+llama2开源聊天机器人
 
-
-## Quick Start
+## 快速开始
 
 ```
 # 下载仓库
@@ -34,3 +33,9 @@ wget https://huggingface.co/GanymedeNil/text2vec-large-chinese/resolve/main/pyto
 python main.py
 
 ```
+
+## 注意事项
+1. 下载模型到本地或服务器下，直接在gpu缓存中运行，容易导致显存不足  
+2. 下载模型使用 git lfs + wget  
+3. 使用llama2模型，需要到meta ai网站申请权限，https://ai.meta.com/resources/models-and-libraries/llama-downloads/  
+4. 登录huggingface，添加一个token，llama2需要登录校验  
