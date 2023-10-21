@@ -1,6 +1,7 @@
 
 import openai
 import os
+import base64
 import gradio as gr
 from langchain import OpenAI
 from langchain.chains import ConversationChain
@@ -21,8 +22,7 @@ conversation = ConversationChain(
     memory=memory,
 )
 
-
-def conversation_history(input, history=[]):
+def predict(input, history=[]):
     history.append(input)
     # input输入有符号时报错
     res = conversation_agent.run(input)
@@ -30,6 +30,18 @@ def conversation_history(input, history=[]):
     history.append(res)
     responses = [(u, b) for u, b in zip(history[::2], history[1::2])]
     return responses, history
+
+
+# 语音识别
+def transcribe(audio):
+    os.rename(audio, audio + '.wav')
+    audio_file = open(audio + '.wav', "rb")
+    transcript = openai.Audio.transcribe("whisper-1", audio_file)
+    return transcript['text']    
+
+def process_audio(audio, history=[]):
+    text = transcribe(audio)
+    return predict(text, history)
 
 
 def create_demo():
@@ -41,6 +53,17 @@ def create_demo():
             txt = gr.Textbox(
                 show_label=False, placeholder="Enter text and press enter", container=False)
 
-        txt.submit(conversation_history, [txt, state], [chatbot, state])
+        with gr.Row():
+            audio = gr.Audio(source="microphone", type="filepath")
+
+        with gr.Row():
+            # 本地图片转base64加载
+            with open("data/avatar.png", "rb") as image_file:
+                image_data = base64.b64encode(image_file.read()).decode('utf-8')
+            video = gr.HTML(
+                f'<img src="data:image/png;base64,{image_data}" width="320" height="240" alt="avatar">', live=False)
+
+        txt.submit(predict, [txt, state], [chatbot, state])
+        audio.change(process_audio, [audio, state], [chatbot, state])
 
     return demo

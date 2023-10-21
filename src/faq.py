@@ -40,8 +40,8 @@ def faq(intput: str) -> str:
     return faq_chain.run(intput)
 
 
-res = faq('如何更改帐户信息')
-print('res', res)
+# res = faq('如何更改帐户信息')
+# print('res', res)
 
 # > Finished chain.
 # res  登录您的帐户，然后点击“我的帐户”以更改个人信息、收货地址等。

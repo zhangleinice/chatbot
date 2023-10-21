@@ -15,3 +15,8 @@ sentence-transformers
 accelerate
 # diffusers
 # matplotlib
+soundfile
+datasets
+librosa
+# 系统安装
+# ffmpeg

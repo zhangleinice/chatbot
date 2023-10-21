@@ -1,35 +1,35 @@
 
-from transformers import AutoTokenizer, LlamaForCausalLM
+# from transformers import AutoTokenizer, LlamaForCausalLM
 
-# model_id = "meta-llama/Llama-2-7b-chat-hf"
-model_path = "llm/Llama-2-7b-chat-hf"
+# # model_id = "meta-llama/Llama-2-7b-chat-hf"
+# model_path = "llm/Llama-2-7b-chat-hf"
 
-tokenizer = AutoTokenizer.from_pretrained(
-    model_path,
-    # token=hf_auth
-)
+# tokenizer = AutoTokenizer.from_pretrained(
+#     model_path,
+#     # token=hf_auth
+# )
 
-model = LlamaForCausalLM.from_pretrained(
-    model_path,
-    # token=hf_auth
-)
+# model = LlamaForCausalLM.from_pretrained(
+#     model_path,
+#     # token=hf_auth
+# )
 
-model = model.eval()
+# model = model.eval()
 
-prompt = "今天你吃了吗，用中文回答我"
+# prompt = "今天你吃了吗，用中文回答我"
 
-input = tokenizer(prompt, return_tensors="pt")
+# input = tokenizer(prompt, return_tensors="pt")
 
-res = model.generate(input_ids=input.input_ids, max_length=30)
+# res = model.generate(input_ids=input.input_ids, max_length=30)
 
-# 将生成的输出转换为文本
-generated_text = tokenizer.decode(res[0], skip_special_tokens=True)
+# # 将生成的输出转换为文本
+# generated_text = tokenizer.decode(res[0], skip_special_tokens=True)
 
-print('input', input)
+# print('input', input)
 
-print('res', res)
+# print('res', res)
 
-print('generated_text', generated_text)
+# print('generated_text', generated_text)
 
 
 # input {'input_ids': tensor([[    1, 29871, 31482, 30408, 30919,   232,   147,   134, 30743,   232,
@@ -71,3 +71,25 @@ print('generated_text', generated_text)
 #          -1.4316e-01, -1.0008e-01],
 #         [ 6.5362e-01, -7.6667e-02,  9.5962e-01,  ..., -6.0123e-01,
 #          -1.6791e-03,  2.1458e-01]])
+
+
+
+from transformers import WhisperProcessor, WhisperForConditionalGeneration
+from datasets import load_dataset
+
+# load model and processor
+processor = WhisperProcessor.from_pretrained("llm/whisper-tiny")
+model = WhisperForConditionalGeneration.from_pretrained("llm/whisper-tiny")
+model.config.forced_decoder_ids = None
+
+# load dummy dataset and read audio files
+ds = load_dataset("hf-internal-testing/librispeech_asr_dummy", "clean", split="validation")
+sample = ds[0]["audio"]
+input_features = processor(sample["array"], sampling_rate=sample["sampling_rate"], return_tensors="pt").input_features 
+
+# generate token ids
+predicted_ids = model.generate(input_features)
+
+transcription = processor.batch_decode(predicted_ids, skip_special_tokens=True)
+
+print(transcription)
