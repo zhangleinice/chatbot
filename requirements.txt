@@ -20,3 +20,4 @@ datasets
 librosa
 # 系统安装
 # ffmpeg
+torchaudio

@@ -74,22 +74,61 @@
 
 
 
+# from transformers import WhisperProcessor, WhisperForConditionalGeneration
+# from datasets import load_dataset
+
+# # load model and processor
+# processor = WhisperProcessor.from_pretrained("llm/whisper-tiny")
+# model = WhisperForConditionalGeneration.from_pretrained("llm/whisper-tiny")
+# model.config.forced_decoder_ids = None
+
+# # load dummy dataset and read audio files
+# ds = load_dataset("hf-internal-testing/librispeech_asr_dummy", "clean", split="validation")
+# print('ds', ds)
+# sample = ds[0]["audio"]
+# input_features = processor(sample["array"], sampling_rate=sample["sampling_rate"], return_tensors="pt").input_features 
+
+# # generate token ids
+# predicted_ids = model.generate(input_features)
+
+# transcription = processor.batch_decode(predicted_ids, skip_special_tokens=True)
+
+# print(transcription)
+
+
+
+
 from transformers import WhisperProcessor, WhisperForConditionalGeneration
-from datasets import load_dataset
+import torchaudio
 
 # load model and processor
 processor = WhisperProcessor.from_pretrained("llm/whisper-tiny")
 model = WhisperForConditionalGeneration.from_pretrained("llm/whisper-tiny")
-model.config.forced_decoder_ids = None
 
-# load dummy dataset and read audio files
-ds = load_dataset("hf-internal-testing/librispeech_asr_dummy", "clean", split="validation")
-sample = ds[0]["audio"]
-input_features = processor(sample["array"], sampling_rate=sample["sampling_rate"], return_tensors="pt").input_features 
+# 加载本地音频文件
+audio_file_path = "data/podcast_clip.mp3"
 
-# generate token ids
-predicted_ids = model.generate(input_features)
+def transcribe(audio):
+    desired_sample_rate = 16000
+    waveform, sample_rate = torchaudio.load(audio_file_path, normalize=True)
+    resampler = torchaudio.transforms.Resample(orig_freq=sample_rate, new_freq=desired_sample_rate)
+    waveform = resampler(waveform)
 
-transcription = processor.batch_decode(predicted_ids, skip_special_tokens=True)
+    # 使用处理器编码音频数据
+    input_features = processor(waveform[0], sampling_rate=desired_sample_rate, return_tensors="pt").input_features
 
-print(transcription)
+    # 执行生成操作
+    predicted_ids = model.generate(input_features)
+
+    transcription = processor.batch_decode(predicted_ids, skip_special_tokens=True)
+    print(transcription)
+    return transcription
+
+transcribe(audio_file_path)
+
+
+
+
+
+
+

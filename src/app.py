@@ -8,7 +8,7 @@ from langchain.chains import ConversationChain
 from langchain.memory import ConversationSummaryBufferMemory
 from langchain.chat_models import ChatOpenAI
 from src.chatbot import conversation_agent
-from models.model import llama2
+from models.model import llama2, transcribe
 
 openai.api_key = os.environ["OPENAI_API_KEY"]
 
@@ -32,16 +32,17 @@ def predict(input, history=[]):
     return responses, history
 
 
-# 语音识别
-def transcribe(audio):
-    os.rename(audio, audio + '.wav')
-    audio_file = open(audio + '.wav', "rb")
-    transcript = openai.Audio.transcribe("whisper-1", audio_file)
-    return transcript['text']    
-
+# asr
 def process_audio(audio, history=[]):
+    audio_file_path = "data/podcast_clip.mp3"
+    print('audio', audio)
+
     text = transcribe(audio)
-    return predict(text, history)
+    history.append(text)
+    # 语音已经识别出来了，llama2返回有问题
+    # text [' Hello.'] 可能是空格造成的
+    print('text', text)
+    return predict(text[0], history)
 
 
 def create_demo():
