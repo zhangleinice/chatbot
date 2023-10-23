@@ -13,7 +13,8 @@ from models.model import llama2, transcribe
 openai.api_key = os.environ["OPENAI_API_KEY"]
 
 memory = ConversationSummaryBufferMemory(
-    llm=llama2, max_token_limit=2048
+    llm=llama2, 
+    max_token_limit=2048
 )
 
 conversation = ConversationChain(
@@ -23,26 +24,35 @@ conversation = ConversationChain(
 )
 
 def predict(input, history=[]):
+    
     history.append(input)
+    print('history', history)
     # input输入有符号时报错
-    res = conversation_agent.run(input)
-    # response = conversation.predict(input=input)
+    # ai agent
+    # res = conversation_agent.run(input)
+    # print('res', res)
+    # llama2直接返回
+    res = conversation.predict(input=input)
+    print('res',res)
     history.append(res)
+    # print('history', history)
+    
     responses = [(u, b) for u, b in zip(history[::2], history[1::2])]
+    # responses: [('用户输入1', '聊天机器人回复1'), ('用户输入2', '聊天机器人回复2'), ...]
+
     return responses, history
 
 
 # asr
 def process_audio(audio, history=[]):
-    audio_file_path = "data/podcast_clip.mp3"
-    print('audio', audio)
 
     text = transcribe(audio)
     history.append(text)
     # 语音已经识别出来了，llama2返回有问题
     # text [' Hello.'] 可能是空格造成的
     print('text', text)
-    return predict(text[0], history)
+    print('history', history)
+    return predict('hello', history)
 
 
 def create_demo():

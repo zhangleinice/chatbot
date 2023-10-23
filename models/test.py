@@ -98,33 +98,34 @@
 
 
 
-from transformers import WhisperProcessor, WhisperForConditionalGeneration
-import torchaudio
+# from transformers import WhisperProcessor, WhisperForConditionalGeneration
+# import torchaudio
 
-# load model and processor
-processor = WhisperProcessor.from_pretrained("llm/whisper-tiny")
-model = WhisperForConditionalGeneration.from_pretrained("llm/whisper-tiny")
+# # load model and processor
+# processor = WhisperProcessor.from_pretrained("llm/whisper-tiny")
+# model = WhisperForConditionalGeneration.from_pretrained("llm/whisper-tiny")
 
-# 加载本地音频文件
-audio_file_path = "data/podcast_clip.mp3"
+# # 加载本地音频文件
+# audio_file_path = "data/podcast_clip.mp3"
 
-def transcribe(audio):
-    desired_sample_rate = 16000
-    waveform, sample_rate = torchaudio.load(audio_file_path, normalize=True)
-    resampler = torchaudio.transforms.Resample(orig_freq=sample_rate, new_freq=desired_sample_rate)
-    waveform = resampler(waveform)
+# def transcribe(audio):
+#     desired_sample_rate = 16000
+#     waveform, sample_rate = torchaudio.load(audio_file_path, normalize=True)
+#     resampler = torchaudio.transforms.Resample(orig_freq=sample_rate, new_freq=desired_sample_rate)
+#     waveform = resampler(waveform)
 
-    # 使用处理器编码音频数据
-    input_features = processor(waveform[0], sampling_rate=desired_sample_rate, return_tensors="pt").input_features
+#     # 使用处理器编码音频数据
+#     input_features = processor(waveform[0], sampling_rate=desired_sample_rate, return_tensors="pt").input_features
 
-    # 执行生成操作
-    predicted_ids = model.generate(input_features)
+#     # 执行生成操作
+#     predicted_ids = model.generate(input_features)
 
-    transcription = processor.batch_decode(predicted_ids, skip_special_tokens=True)
-    print(transcription)
-    return transcription
+#     transcription = processor.batch_decode(predicted_ids, skip_special_tokens=True)
+#     print(transcription)
+#     return transcription
 
-transcribe(audio_file_path)
+# transcribe(audio_file_path)
+
 
 
 

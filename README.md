@@ -4,7 +4,7 @@ llama2开源聊天机器人
 ## 快速开始
 
 ```
-# 下载仓库
+# 克隆仓库
 git clone https://github.com/zhangleinice/chatbot.git
 cd chatbot/
 
@@ -23,11 +23,11 @@ huggingface-cli login --token {Your_Huggingface_Token}
 
 # 下载模型到llm文件夹下
 cd llm/
-git lfs clone https://huggingface.co/meta-llama/Llama-2-7b-chat-hf
-git clone https://huggingface.co/shibing624/text2vec-base-chinese
-
-# 大文件使用wget下载
-wget https://huggingface.co/GanymedeNil/text2vec-large-chinese/resolve/main/pytorch_model.bin
+按 llm/README.md方式下载  
+llm/bark-small/  
+llm/Llama-2-7b-hf/  
+llm/text2vec-base-chinese/  
+llm/whisper-tiny/  
 
 # 启动
 python main.py

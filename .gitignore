@@ -1,6 +1,7 @@
 venv/
 llm/bark-small/
 llm/Llama-2-7b-chat-hf/
+llm/Llama-2-7b-hf/
 llm/text2vec-base-chinese/
 llm/whisper-tiny/
 __pycache__/
