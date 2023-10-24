@@ -1,8 +1,8 @@
 venv/
-llm/bark-small/
-llm/Llama-2-7b-chat-hf/
-llm/Llama-2-7b-hf/
-llm/text2vec-base-chinese/
-llm/whisper-tiny/
+models/bark-small/
+models/Llama-2-7b-chat-hf/
+models/Llama-2-7b-hf/
+models/text2vec-base-chinese/
+models/whisper-tiny/
 __pycache__/
 *.pyc

@@ -21,16 +21,16 @@ export OPENAI_API_KEY={Your_Private_Openai_Key}
 # 登录 huggingface
 huggingface-cli login --token {Your_Huggingface_Token}
 
-# 下载模型到llm文件夹下
-cd llm/
-按 llm/README.md方式下载  
-llm/bark-small/  
-llm/Llama-2-7b-hf/  
-llm/text2vec-base-chinese/  
-llm/whisper-tiny/  
+# 下载模型到models文件夹下
+cd models/
+按 models/README.md方式下载  
+models/bark-small/  
+models/Llama-2-7b-hf/  
+models/text2vec-base-chinese/  
+models/whisper-tiny/  
 
 # 启动
-python main.py
+python app.py
 
 ```
 

@@ -21,3 +21,5 @@ librosa
 # 系统安装
 # ffmpeg
 torchaudio
+IPython
+azure-cognitiveservices-speech
