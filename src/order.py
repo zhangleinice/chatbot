@@ -4,7 +4,7 @@ import json
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain.agents import tool
-from models.model import llama2
+from models.use import llama2
 
 ORDER_1 = "20230101ABC"
 ORDER_2 = "20230101EFG"

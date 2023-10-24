@@ -1,58 +1,59 @@
 
+
 import openai
 import os
 import base64
 import gradio as gr
 from langchain import OpenAI
 from langchain.chains import ConversationChain
-from langchain.memory import ConversationSummaryBufferMemory
+from langchain.memory import ConversationSummaryBufferMemory, ConversationBufferWindowMemory
 from langchain.chat_models import ChatOpenAI
-from src.chatbot import conversation_agent
-from models.model import llama2, transcribe
+from chatbot import conversation_agent
+from models.use import llama2, transcribe, llama2_7b, llama2_7b_predict, play_voice
 
 openai.api_key = os.environ["OPENAI_API_KEY"]
 
-memory = ConversationSummaryBufferMemory(
-    llm=llama2, 
+# BufferWindowMemory： 仅支持过去几轮对话
+memory = ConversationBufferWindowMemory(
+    llm=llama2_7b, 
     max_token_limit=2048
 )
 
 conversation = ConversationChain(
-    llm=llama2,
+    llm=llama2_7b,
     # llm=OpenAI(max_tokens=2048, temperature=0.5),
     memory=memory,
+    verbose=True
 )
 
+
 def predict(input, history=[]):
-    
+
     history.append(input)
     print('history', history)
     # input输入有符号时报错
     # ai agent
     # res = conversation_agent.run(input)
-    # print('res', res)
-    # llama2直接返回
-    res = conversation.predict(input=input)
-    print('res',res)
+
+    # 使用 langchain.ConversationChain 后返回数据有问题
+    # res = conversation.predict(input=input)
+    res = llama2_7b_predict(input)
+    # print('res',res)
+
     history.append(res)
-    # print('history', history)
-    
-    responses = [(u, b) for u, b in zip(history[::2], history[1::2])]
+
+    play_voice(res)
+
     # responses: [('用户输入1', '聊天机器人回复1'), ('用户输入2', '聊天机器人回复2'), ...]
+    responses = [(u, b) for u, b in zip(history[::2], history[1::2])]
 
     return responses, history
 
 
 # asr
 def process_audio(audio, history=[]):
-
     text = transcribe(audio)
-    history.append(text)
-    # 语音已经识别出来了，llama2返回有问题
-    # text [' Hello.'] 可能是空格造成的
-    print('text', text)
-    print('history', history)
-    return predict('hello', history)
+    return predict(text, history)
 
 
 def create_demo():
@@ -78,3 +79,13 @@ def create_demo():
         audio.change(process_audio, [audio, state], [chatbot, state])
 
     return demo
+
+
+def main():
+    demo = create_demo()
+
+    demo.launch(server_name="127.0.0.1", server_port=8888)
+
+
+if __name__ == "__main__":
+    main()

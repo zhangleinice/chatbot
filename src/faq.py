@@ -11,7 +11,7 @@ from langchain.text_splitter import SpacyTextSplitter
 from langchain.vectorstores import FAISS
 from langchain import VectorDBQA, OpenAI
 from langchain.agents import tool
-from models.model import embeddings_zh, llama2
+from models.use import embeddings_zh, llama2
 
 # llm = OpenAI(temperature=0)
 
