@@ -11,7 +11,7 @@ from langchain.chat_models import ChatOpenAI
 from chatbot import conversation_agent
 from models.use import llama2, transcribe, llama2_7b, llama2_7b_predict, play_voice
 
-openai.api_key = os.environ["OPENAI_API_KEY"]
+# openai.api_key = os.environ["OPENAI_API_KEY"]
 
 # BufferWindowMemory： 仅支持过去几轮对话
 memory = ConversationBufferWindowMemory(
@@ -42,7 +42,7 @@ def predict(input, history=[]):
 
     history.append(res)
 
-    play_voice(res)
+    # play_voice(res)
 
     # responses: [('用户输入1', '聊天机器人回复1'), ('用户输入2', '聊天机器人回复2'), ...]
     responses = [(u, b) for u, b in zip(history[::2], history[1::2])]
@@ -72,6 +72,14 @@ def create_demo():
             # 本地图片转base64加载
             with open("data/avatar.png", "rb") as image_file:
                 image_data = base64.b64encode(image_file.read()).decode('utf-8')
+
+            # 本地语音转base64加载
+            with open("data/bark_out.wav", "rb") as audio_file:
+                audio_data = base64.b64encode(audio_file.read()).decode("utf-8")
+
+            audio_element = gr.HTML(
+                f'<audio controls="controls" src="data:audio/wav;base64,{audio_data}"></audio>', live=False)
+
             video = gr.HTML(
                 f'<img src="data:image/png;base64,{image_data}" width="320" height="240" alt="avatar">', live=False)
 

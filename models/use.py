@@ -22,6 +22,7 @@ llama2_7b_chat_model = AutoModelForCausalLM.from_pretrained("models/Llama-2-7b-c
 llama2_7b_tokenizer = AutoTokenizer.from_pretrained('models/Llama-2-7b-hf')
 llama2_7b_model = AutoModelForCausalLM.from_pretrained("models/Llama-2-7b-hf")
 
+# 中文合成效果不太好
 bark_processor = AutoProcessor.from_pretrained("models/bark-small")
 bark_model = AutoModel.from_pretrained("models/bark-small")
 
@@ -106,10 +107,10 @@ def llama2_7b_predict(prompt):
 
 
 # tts
-def play_voice1():
+def play_voice():
 
     inputs = bark_processor(
-        text=["Hello, my name is Suno. And, uh — and I like pizza. [laughs] But I also have other interests such as playing tic tac toe."],
+        text=["Hello, my name is Suno"],
         return_tensors="pt",
     )
 
@@ -121,25 +122,13 @@ def play_voice1():
 
 # speech_values, sampling_rate = play_voice()
 
+# scipy.io.wavfile.write("data/bark_out.wav", rate=sampling_rate, data=speech_values.cpu().numpy().squeeze())
+
 # Audio(speech_values.cpu().numpy().squeeze(), rate=sampling_rate)
 
 # print('res', speech_values)
 
-# 保存
-# scipy.io.wavfile.write("bark_out.wav", rate=sampling_rate, data=speech_values.cpu().numpy().squeeze())
 
-
-
-speech_config = speechsdk.SpeechConfig(subscription=os.environ.get('AZURE_SPEECH_KEY'), region=os.environ.get('AZURE_SPEECH_REGION'))
-
-audio_config = speechsdk.audio.AudioOutputConfig(use_default_speaker=True)
-
-speech_config.speech_synthesis_language='zh-CN'
-speech_config.speech_synthesis_voice_name='zh-CN-XiaohanNeural'
-speech_synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
-
-def play_voice(text): 
-    speech_synthesizer.speak_text_async(text)
 
 
 

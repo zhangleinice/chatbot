@@ -1,41 +1,51 @@
 # chatbot
-llama2开源聊天机器人
+llama2开源聊天数字人
 
-## 快速开始
+## 简介
 
 ```
-# 克隆仓库
+ASR: 使用 openai/whisper-tiny 语音识别 
+NLP: 使用 meta-llama/Llama-2-7b-hf 模型推理  
+TTS: 使用 suno/bark-small 语音合成  
+本地知识库问答: langchain  
+AI Agent: langchain agent 
+
+```
+
+
+## Quick Start
+
+```
+# clone the repo
 git clone https://github.com/zhangleinice/chatbot.git
+
+# Go to directory
 cd chatbot/
 
-# 创建,激活虚拟环境
+# create a new environment
 python3 -m venv venv
+
+# activate the new environment
 source venv/bin/activate
 
-#  安装依赖
+#  prepare the basic environments
 pip install -r requirements.txt
 
-# openai环境变量
-export OPENAI_API_KEY={Your_Private_Openai_Key}
+# prepare your private OpenAI key (for Linux)
+# export OPENAI_API_KEY={Your_Private_Openai_Key}
 
-# 登录 huggingface
+# login huggingface
 huggingface-cli login --token {Your_Huggingface_Token}
 
-# 下载模型到models文件夹下
+# download models
 cd models/
-按 models/README.md方式下载  
-models/bark-small/  
-models/Llama-2-7b-hf/  
-models/text2vec-base-chinese/  
-models/whisper-tiny/  
+git clone https://huggingface.co/suno/bark-small
+git clone https://huggingface.co/meta-llama/Llama-2-7b-hf
+git clone https://huggingface.co/shibing624/text2vec-base-chinese
+git clone https://huggingface.co/openai/whisper-tiny 
 
-# 启动
+# run
 python app.py
 
 ```
-
-## 注意事项
-1. 下载模型到本地或服务器下，直接在gpu缓存中运行，容易导致显存不足  
-2. 下载模型使用 git lfs + wget  
-3. 使用llama2模型，需要到meta ai网站申请权限，https://ai.meta.com/resources/models-and-libraries/llama-downloads/  
-4. 登录huggingface，添加一个token，llama2需要登录校验  
+ 

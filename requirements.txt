@@ -22,4 +22,6 @@ librosa
 # ffmpeg
 torchaudio
 IPython
-azure-cognitiveservices-speech
+paddlepaddle
+paddlespeech
+numpy==1.19.5
