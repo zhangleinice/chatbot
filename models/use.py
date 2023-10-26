@@ -6,8 +6,6 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, LlamaForCausalLM
 from transformers import WhisperProcessor, WhisperForConditionalGeneration
 from transformers import pipeline
 from transformers import AutoProcessor, AutoModel
-from IPython.display import Audio
-import azure.cognitiveservices.speech as speechsdk
 import torchaudio
 import torch
 import scipy
@@ -22,7 +20,6 @@ llama2_7b_chat_model = AutoModelForCausalLM.from_pretrained("models/Llama-2-7b-c
 llama2_7b_tokenizer = AutoTokenizer.from_pretrained('models/Llama-2-7b-hf')
 llama2_7b_model = AutoModelForCausalLM.from_pretrained("models/Llama-2-7b-hf")
 
-# 中文合成效果不太好
 bark_processor = AutoProcessor.from_pretrained("models/bark-small")
 bark_model = AutoModel.from_pretrained("models/bark-small")
 
@@ -71,7 +68,7 @@ llama2_7b = HuggingFacePipeline(
 )
 
 # asr
-def transcribe(audio, desired_sample_rate=16000):
+def whisper_asr(audio, desired_sample_rate=16000):
     os.rename(audio, audio + '.wav')
     audio_file = open(audio + '.wav', "rb")
 
@@ -107,26 +104,23 @@ def llama2_7b_predict(prompt):
 
 
 # tts
-def play_voice():
+def bark_tts(text="Hello, my name is Suno"):
 
     inputs = bark_processor(
-        text=["Hello, my name is Suno"],
+        text=[text],
         return_tensors="pt",
     )
 
+    # tensor
     speech_values = bark_model.generate(**inputs, do_sample=True)
 
+    # 采样率
     sampling_rate = bark_model.generation_config.sample_rate
+
+    scipy.io.wavfile.write("data/bark_out.wav", rate=sampling_rate, data=speech_values.cpu().numpy().squeeze())
 
     return speech_values, sampling_rate
 
-# speech_values, sampling_rate = play_voice()
-
-# scipy.io.wavfile.write("data/bark_out.wav", rate=sampling_rate, data=speech_values.cpu().numpy().squeeze())
-
-# Audio(speech_values.cpu().numpy().squeeze(), rate=sampling_rate)
-
-# print('res', speech_values)
 
 
 
