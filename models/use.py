@@ -1,6 +1,6 @@
 import os
 from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.embeddings.openai import OpenAIEmbeddings
+# from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.llms import HuggingFacePipeline
 from transformers import AutoTokenizer, AutoModelForCausalLM, LlamaForCausalLM
 from transformers import WhisperProcessor, WhisperForConditionalGeneration
@@ -117,9 +117,11 @@ def bark_tts(text="Hello, my name is Suno"):
     # 采样率
     sampling_rate = bark_model.generation_config.sample_rate
 
-    scipy.io.wavfile.write("data/bark_out.wav", rate=sampling_rate, data=speech_values.cpu().numpy().squeeze())
+    file_path = "data/bark_out.wav"
 
-    return speech_values, sampling_rate
+    scipy.io.wavfile.write(file_path, rate=sampling_rate, data=speech_values.cpu().numpy().squeeze())
+
+    return speech_values, sampling_rate, file_path
 
 
 

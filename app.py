@@ -11,7 +11,6 @@ from models.use import whisper_asr, llama2_7b, llama2_7b_predict, bark_tts
 
 # openai.api_key = os.environ["OPENAI_API_KEY"]
 
-# BufferWindowMemory： 仅支持过去几轮对话
 memory = ConversationBufferWindowMemory(
     llm=llama2_7b, 
     max_token_limit=2048
@@ -23,6 +22,16 @@ conversation = ConversationChain(
     memory=memory,
     verbose=True
 )
+
+def text2speech(text):
+    _, _, file_path = bark_tts(text)
+
+    with open(file_path, "rb") as audio_file:
+        audio_data = base64.b64encode(audio_file.read()).decode("utf-8")
+
+    audio_html = f"""<audio controls="controls" src="data:audio/wav;base64,{audio_data}"></audio>"""
+    
+    return audio_html
 
 
 def predict(input, history=[]):
@@ -43,14 +52,7 @@ def predict(input, history=[]):
     history.append(res)
     # print('history', history)
 
-    # tts 生成语音文件
-    bark_tts(res)
-
-    with open("data/bark_out.wav", "rb") as audio_file:
-        audio_data = base64.b64encode(audio_file.read()).decode("utf-8")
-
-    # 更新audio
-    audio_html = f"""<audio controls="controls" src="data:audio/wav;base64,{audio_data}"></audio>"""
+    audio_html = text2speech(res)
 
     # responses: [('用户输入1', '聊天机器人回复1'), ('用户输入2', '聊天机器人回复2'), ...]
     responses = [(u, b) for u, b in zip(history[::2], history[1::2])]
@@ -58,8 +60,7 @@ def predict(input, history=[]):
     return responses, audio_html, history
 
 
-# asr
-def process_audio(audio, history=[]):
+def speech2text(audio, history=[]):
     text = whisper_asr(audio)
     return predict(text, history)
 
@@ -91,7 +92,7 @@ def create_demo():
                 f'<img src="data:image/png;base64,{image_data}" width="320" height="240" alt="avatar">')
 
         txt.submit(predict, [txt, state], [chatbot, output_audio, state])
-        input_audio.change(process_audio, [input_audio, state], [chatbot, output_audio, state])
+        input_audio.change(speech2text, [input_audio, state], [chatbot, output_audio, state])
 
     return demo
 
