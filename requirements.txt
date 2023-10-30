@@ -22,3 +22,4 @@ librosa
 # ffmpeg
 torchaudio
 IPython
+chromadb
