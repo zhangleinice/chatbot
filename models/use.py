@@ -1,14 +1,17 @@
 import os
 from langchain.embeddings import HuggingFaceEmbeddings
-# from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.llms import HuggingFacePipeline
 from transformers import AutoTokenizer, AutoModelForCausalLM, LlamaForCausalLM
 from transformers import WhisperProcessor, WhisperForConditionalGeneration
 from transformers import pipeline
 from transformers import AutoProcessor, AutoModel
+from transformers import TextStreamer
 import torchaudio
 import torch
 import scipy
+
+
+# device = f'cuda:{cuda.current_device()}' if cuda.is_available() else 'cpu'
 
 # Load Tokenizer and Model
 whisper_processor = WhisperProcessor.from_pretrained("models/whisper-tiny")
@@ -43,7 +46,7 @@ llama2_7b_chat_pipe = pipeline(
     eos_token_id = llama2_7b_chat_tokenizer.eos_token_id
 )
 
-llama2 = HuggingFacePipeline(
+llama2_7b_chat = HuggingFacePipeline(
     pipeline=llama2_7b_chat_pipe, 
     model_kwargs={'temperature':0}
 )
@@ -92,10 +95,13 @@ def whisper_asr(audio, desired_sample_rate=16000):
 def llama2_7b_predict(prompt):
     
     # encode
-    input = llama2_7b_tokenizer(prompt, return_tensors="pt")
+    inputs = llama2_7b_tokenizer(prompt, return_tensors="pt")
+
+    # 流式处理
+    streamer = TextStreamer(llama2_7b_tokenizer, skip_prompt=True, skip_special_tokens=True)
 
     # predict
-    res = llama2_7b_model.generate(input_ids=input.input_ids, max_length=30)
+    res = llama2_7b_model.generate(**inputs, streamer=streamer, max_length=30)
 
     # decode
     generated_text = llama2_7b_tokenizer.decode(res[0], skip_special_tokens=True)

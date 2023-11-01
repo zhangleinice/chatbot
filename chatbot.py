@@ -12,14 +12,17 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain.agents import initialize_agent, tool
 from langchain.document_loaders.csv_loader import CSVLoader
-# from models.use import llama2
+from models.use import  embeddings_zh, llama2_7b, llama2_7b_chat
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
+# openai.api_key = os.environ["OPENAI_API_KEY"]
+# 流式传输
+# llm = OpenAI(temperature=0, streaming=True, callbacks=[StreamingStdOutCallbackHandler()])
+# embeddings = OpenAIEmbeddings()
 
-openai.api_key = os.environ["OPENAI_API_KEY"]
-
-llm = OpenAI(temperature=0)
-embeddings = OpenAIEmbeddings()
-
+# 切换开源模型
+llm = llama2_7b
+embeddings = embeddings_zh
 
 # 问答
 loader = TextLoader("data/faq/ecommerce_faq.txt")
@@ -128,7 +131,7 @@ conversation_agent = initialize_agent(
     verbose=True
 )
 
-question3 = "你们的退货政策是怎么样的"
+question3 = "你好"
 answer3 = conversation_agent.run(question3)
 print(answer3)
 
