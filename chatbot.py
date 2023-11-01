@@ -1,6 +1,5 @@
 import json
 import re, os
-import openai
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import RetrievalQA
 from langchain.document_loaders import TextLoader
@@ -12,17 +11,22 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain.agents import initialize_agent, tool
 from langchain.document_loaders.csv_loader import CSVLoader
-from models.use import  embeddings_zh, llama2_7b, llama2_7b_chat
+# from models.use import  embeddings_zh, llama2_7b, llama2_7b_chat
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
-# openai.api_key = os.environ["OPENAI_API_KEY"]
 # 流式传输
-# llm = OpenAI(temperature=0, streaming=True, callbacks=[StreamingStdOutCallbackHandler()])
-# embeddings = OpenAIEmbeddings()
+# 使用langchain 的 callbacks进行流式处理
+llm = OpenAI(
+    openai_api_key= os.environ["OPENAI_API_KEY"],
+    temperature=0, 
+    streaming=True, 
+    callbacks=[StreamingStdOutCallbackHandler()]
+)
+embeddings = OpenAIEmbeddings()
 
 # 切换开源模型
-llm = llama2_7b
-embeddings = embeddings_zh
+# llm = llama2_7b
+# embeddings = embeddings_zh
 
 # 问答
 loader = TextLoader("data/faq/ecommerce_faq.txt")
@@ -107,9 +111,8 @@ def search_order(input:str)->str:
     else:
         return f"对不起，根据{input}没有找到您的订单"
 
-# res = faq('如何更改帐户信息')
-# print('res', res)
-
+res = faq('如何更改帐户信息')
+print('res', res)
 
 # res = recommend_product('我想买一件衣服，想要在春天去公园穿，但是不知道哪个款式好看，你能帮我推荐一下吗？')
 # print('res', res)
@@ -128,12 +131,12 @@ conversation_agent = initialize_agent(
     llm, 
     agent="conversational-react-description", 
     memory=memory, 
-    verbose=True
+    # verbose=False
 )
 
-question3 = "你好"
-answer3 = conversation_agent.run(question3)
-print(answer3)
+# question3 = "写一首关于月亮的诗歌"
+# answer3 = conversation_agent.run(question3)
+# print('res', answer3)
 
 
 
