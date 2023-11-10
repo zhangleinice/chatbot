@@ -87,10 +87,10 @@ def create_demo():
 
         # with gr.Row():
         #     # 本地图片，音频文件转base64加载
-        #     with open("data/avatar.png", "rb") as image_file:
+        #     with open("static/avatar.png", "rb") as image_file:
         #         image_data = base64.b64encode(image_file.read()).decode('utf-8')
 
-        #     with open("data/bark_out.wav", "rb") as audio_file:
+        #     with open("static/bark_out.wav", "rb") as audio_file:
         #         audio_data = base64.b64encode(audio_file.read()).decode("utf-8")
 
         #     output_audio = gr.HTML(

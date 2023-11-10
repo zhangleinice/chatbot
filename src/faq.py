@@ -15,7 +15,7 @@ from models.use import embeddings_zh, llama2
 
 # llm = OpenAI(temperature=0)
 
-loader = TextLoader('data/faq/ecommerce_faq.txt')
+loader = TextLoader('static/faq/ecommerce_faq.txt')
 
 documents = loader.load()
 

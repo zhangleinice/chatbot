@@ -8,7 +8,7 @@ from models.use import embeddings_zh, llama2
 
 # llm = OpenAI(temperature=0)
 
-product_loader = CSVLoader('data/faq/ecommerce_products.csv')
+product_loader = CSVLoader('static/faq/ecommerce_products.csv')
 
 product_documents = product_loader.load()
 

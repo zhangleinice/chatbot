@@ -29,7 +29,7 @@ embeddings = OpenAIEmbeddings()
 # embeddings = embeddings_zh
 
 # 问答
-loader = TextLoader("data/faq/ecommerce_faq.txt")
+loader = TextLoader("static/faq/ecommerce_faq.txt")
 documents = loader.load()
 text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 texts = text_splitter.split_documents(documents)
@@ -48,7 +48,7 @@ def faq(intput: str) -> str:
     return faq_chain.run(intput)
 
 #  商品推荐 llMchain
-product_loader = CSVLoader(file_path='data/faq/ecommerce_products.csv')
+product_loader = CSVLoader(file_path='static/faq/ecommerce_products.csv')
 product_documents = product_loader.load()
 
 product_text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)

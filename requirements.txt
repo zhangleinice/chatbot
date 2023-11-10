@@ -23,3 +23,6 @@ librosa
 torchaudio
 IPython
 chromadb
+sse_starlette
+uvicorn
+fastapi

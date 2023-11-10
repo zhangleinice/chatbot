@@ -123,7 +123,7 @@ def bark_tts(text="Hello, my name is Suno"):
     # 采样率
     sampling_rate = bark_model.generation_config.sample_rate
 
-    file_path = "data/bark_out.wav"
+    file_path = "static/bark_out.wav"
 
     scipy.io.wavfile.write(file_path, rate=sampling_rate, data=speech_values.cpu().numpy().squeeze())
 
