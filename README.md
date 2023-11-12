@@ -7,7 +7,7 @@ llama2开源聊天数字人
 ASR: 使用 openai/whisper-tiny 语音识别 
 NLP: 使用 meta-llama/Llama-2-7b-hf 模型推理  
 TTS: 使用 suno/bark-small 语音合成  
-本地知识库问答: langchain  
+本地知识库问答: langchain RAG 
 AI Agent: langchain agent 
 
 ```

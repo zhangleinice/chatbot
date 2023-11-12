@@ -13,11 +13,59 @@
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
     <script type="text/babel">
+
         const ChatApp = () => {
 
+            const { useState } = React
+
+            const [formData, setFormData] = useState({ question: '' });
+            const [answer, setAnswer] = useState('');
+            const [messages, setMessages] = useState([])
+
+
+            const onChange = e => {
+                const { name, value } = e.target;
+                setFormData({ ...formData, [name]: value });
+            }
+
+            const onSubmit = async e => {
+                e.preventDefault();
+                let res = ""
+                setMessages([...messages, formData.question])
+                const response = await fetch("/ask", {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ ...formData })
+                });
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                while (true) {
+                    const { value, done } = await reader.read();
+                    if (done) break;
+                    res += decoder.decode(value);
+                    setAnswer(res)
+                }
+                setMessages([...messages, formData.question, answer])
+                // <p>{answer}</p>
+            }
+
             return (
-                <div>
-                    你好，chatgpt
+                <div id="app">
+                    <h1>chatbot</h1>
+                    <div class="chat-box">
+                        {messages.map((item, idx) => 
+                             <p key={idx}>{item}</p>
+                        )}                        
+                    </div>
+                    <div>
+                        <form onSubmit={onSubmit}>
+                            <input type="text" name="question" value={formData.question} placeholder="请输入问题" onChange={onChange}/>
+                            <button type="submit">Ask</button>
+                        </form>
+                    </div>
                 </div>
             );
         };
@@ -26,3 +74,12 @@
     </script>
 </body>
 </html>
+
+<style>
+    .chat-box{
+        width: 500px;
+        height: 800px;
+        overflow-y: auto;
+        background: #ccc;
+    }
+</style>
