@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat</title>
+    <title>chatbot</title>
 </head>
 <body>
     <div id="root"></div>
@@ -16,12 +16,11 @@
 
         const ChatApp = () => {
 
-            const { useState } = React
+            const { useState, useEffect } = React
 
             const [formData, setFormData] = useState({ question: '' });
             const [answer, setAnswer] = useState('');
             const [messages, setMessages] = useState([])
-
 
             const onChange = e => {
                 const { name, value } = e.target;
@@ -31,7 +30,9 @@
             const onSubmit = async e => {
                 e.preventDefault();
                 let res = ""
-                setMessages([...messages, formData.question])
+
+                setMessages(pre => [...pre, formData.question]);
+                
                 const response = await fetch("/ask", {
                     method: 'POST',
                     headers: {
@@ -48,8 +49,9 @@
                     res += decoder.decode(value);
                     setAnswer(res)
                 }
-                setMessages([...messages, formData.question, answer])
-                // <p>{answer}</p>
+
+                setMessages(pre => [...pre, res]);
+                setAnswer('');
             }
 
             return (
@@ -58,12 +60,15 @@
                     <div class="chat-box">
                         {messages.map((item, idx) => 
                              <p key={idx}>{item}</p>
-                        )}                        
+                        )} 
+                        {
+                           messages.length % 2 ? <p>{answer}</p> : null
+                        }
                     </div>
-                    <div>
+                    <div class="foot">
                         <form onSubmit={onSubmit}>
                             <input type="text" name="question" value={formData.question} placeholder="请输入问题" onChange={onChange}/>
-                            <button type="submit">Ask</button>
+                            <button type="submit">确认</button>
                         </form>
                     </div>
                 </div>
@@ -76,10 +81,31 @@
 </html>
 
 <style>
+    #app{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
     .chat-box{
         width: 500px;
-        height: 800px;
+        height: 750px;
         overflow-y: auto;
-        background: #ccc;
+        background: rgba(204, 204, 204, 0.2);
+        padding: 20px;
+        box-sizing: border-box;
+    }
+    .foot{
+        width: 500px;
+        margin-top: 15px;
+    }
+    .foot form{
+        display: flex;
+    }
+    .foot form input{
+        width: 350px;
+    }
+    .foot form button{
+        width: 80px;
+        margin-left: auto;
     }
 </style>
