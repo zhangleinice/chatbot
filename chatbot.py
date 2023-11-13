@@ -13,6 +13,14 @@ from langchain.agents import initialize_agent, tool
 from langchain.document_loaders.csv_loader import CSVLoader
 # from models.use import  embeddings_zh, llama2_7b, llama2_7b_chat
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+from langchain.callbacks import AsyncIteratorCallbackHandler
+import openai
+
+
+# openai.proxy = {
+#             "http": "http://127.0.0.1:7890",
+#             "https": "http://127.0.0.1:7890"
+#         }
 
 # 流式传输
 # 使用langchain 的 callbacks进行流式处理
@@ -20,7 +28,7 @@ llm = OpenAI(
     openai_api_key= os.environ["OPENAI_API_KEY"],
     temperature=0, 
     streaming=True, 
-    callbacks=[StreamingStdOutCallbackHandler()]
+    callbacks=[AsyncIteratorCallbackHandler()]
 )
 embeddings = OpenAIEmbeddings()
 
@@ -45,7 +53,7 @@ faq_chain = RetrievalQA.from_chain_type(
 @tool("FAQ")
 def faq(intput: str) -> str:
     """"useful for when you need to answer questions about shopping policies, like return policy, shipping policy, etc."""
-    return faq_chain.run(intput)
+    return faq_chain.acall(intput)
 
 #  商品推荐 llMchain
 product_loader = CSVLoader(file_path='static/faq/ecommerce_products.csv')
@@ -66,7 +74,7 @@ product_chain = RetrievalQA.from_chain_type(
 @tool("Recommend Product")
 def recommend_product(input: str) -> str:
     """"useful for when you need to search and recommend products and recommend it to the user"""
-    return product_chain.run(input)
+    return product_chain.acall(input)
 
 # 订单查询
 ORDER_1 = "20230101ABC"
@@ -111,8 +119,9 @@ def search_order(input:str)->str:
     else:
         return f"对不起，根据{input}没有找到您的订单"
 
-res = faq('如何更改帐户信息')
-print('res', res)
+# res = faq('如何更改帐户信息')
+# print('res', res)
+# <coroutine object Chain.acall at 0x13755e820>
 
 # res = recommend_product('我想买一件衣服，想要在春天去公园穿，但是不知道哪个款式好看，你能帮我推荐一下吗？')
 # print('res', res)

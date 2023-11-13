@@ -58,7 +58,7 @@ def f2(llm_chain, query):
 def sse_output(query='你好'):
     callback = My_StreamingStdOutCallbackHandler()
 
-    # 创建一个新线程
+    # 新开一个线程
     thread = threading.Thread(target=f1, args=(llm, query))
     thread.start()
 
