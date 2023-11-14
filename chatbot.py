@@ -12,15 +12,18 @@ from langchain.chains import LLMChain
 from langchain.agents import initialize_agent, tool
 from langchain.document_loaders.csv_loader import CSVLoader
 # from models.use import  embeddings_zh, llama2_7b, llama2_7b_chat
-from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.callbacks import AsyncIteratorCallbackHandler
 import openai
+from langchain.chat_models import ChatOpenAI
 
 
-# openai.proxy = {
-#             "http": "http://127.0.0.1:7890",
-#             "https": "http://127.0.0.1:7890"
-#         }
+openai.proxy = {
+            "http": "http://127.0.0.1:7890",
+            "https": "http://127.0.0.1:7890"
+        }
+
+# callback必须公用一个
+callback = AsyncIteratorCallbackHandler()
 
 # 流式传输
 # 使用langchain 的 callbacks进行流式处理
@@ -28,7 +31,7 @@ llm = OpenAI(
     openai_api_key= os.environ["OPENAI_API_KEY"],
     temperature=0, 
     streaming=True, 
-    callbacks=[AsyncIteratorCallbackHandler()]
+    callbacks=[callback]
 )
 embeddings = OpenAIEmbeddings()
 
@@ -47,7 +50,8 @@ docsearch = Chroma.from_documents(texts, embeddings)
 faq_chain = RetrievalQA.from_chain_type(
     llm, 
     chain_type="stuff", 
-    retriever=docsearch.as_retriever()
+    retriever=docsearch.as_retriever(),
+    return_source_documents= False
 )
 
 @tool("FAQ")
@@ -140,7 +144,7 @@ conversation_agent = initialize_agent(
     llm, 
     agent="conversational-react-description", 
     memory=memory, 
-    # verbose=False
+    verbose=True
 )
 
 # question3 = "写一首关于月亮的诗歌"
