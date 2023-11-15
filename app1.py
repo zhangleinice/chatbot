@@ -5,16 +5,13 @@ import gradio as gr
 from langchain import OpenAI
 from langchain.chains import ConversationChain
 from langchain.memory import ConversationSummaryBufferMemory, ConversationBufferWindowMemory
-from chatbot import faq, recommend_product, conversation_agent, callback
+from chatbot import conversation_agent, callback, faq
 # from models.use import whisper_asr, llama2_7b, llama2_7b_predict, bark_tts
-
 import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import FileResponse, StreamingResponse
 import asyncio
 
-
-# 流式输出需要添加代理
 openai.proxy = {
             "http": "http://127.0.0.1:7890",
             "https": "http://127.0.0.1:7890"
@@ -33,10 +30,15 @@ async def wait_done(fn, event):
 
 async def call_openai(question):
 
-    # chain = recommend_product(question)
     # chain = faq(question)
     chain = conversation_agent.arun(question)
+    print('conversation_agent', chain)
+    # conversation_agent <coroutine object Chain.arun at 0x133319f10>
 
+    # 直接使用openai模型
+    # coroutine = wait_done(model.agenerate(messages=[[HumanMessage(content=question)]]), callback.done)
+
+    # 使用llmchain
     coroutine = wait_done(chain, callback.done)
 
     task = asyncio.create_task(coroutine)

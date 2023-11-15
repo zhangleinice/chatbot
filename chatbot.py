@@ -12,21 +12,28 @@ from langchain.chains import LLMChain
 from langchain.agents import initialize_agent, tool
 from langchain.document_loaders.csv_loader import CSVLoader
 # from models.use import  embeddings_zh, llama2_7b, llama2_7b_chat
-from langchain.callbacks import AsyncIteratorCallbackHandler
+from langchain.callbacks import AsyncIteratorCallbackHandler, StreamlitCallbackHandler
 import openai
 from langchain.chat_models import ChatOpenAI
 
+from langchain.callbacks.streaming_stdout_final_only import (
+    FinalStreamingStdOutCallbackHandler,
+)
+from langchain.agents.agent_types import AgentType
+from dotenv import load_dotenv
 
+# load_dotenv()
+
+# 异步请求添加代理
 openai.proxy = {
             "http": "http://127.0.0.1:7890",
             "https": "http://127.0.0.1:7890"
         }
 
-# callback必须公用一个
+# callback必须共用一个
 callback = AsyncIteratorCallbackHandler()
 
-# 流式传输
-# 使用langchain 的 callbacks进行流式处理
+# langchain 的 callbacks进行流式处理
 llm = OpenAI(
     openai_api_key= os.environ["OPENAI_API_KEY"],
     temperature=0, 
@@ -51,13 +58,13 @@ faq_chain = RetrievalQA.from_chain_type(
     llm, 
     chain_type="stuff", 
     retriever=docsearch.as_retriever(),
-    return_source_documents= False
 )
 
 @tool("FAQ")
-def faq(intput: str) -> str:
+def faq(input):
     """"useful for when you need to answer questions about shopping policies, like return policy, shipping policy, etc."""
-    return faq_chain.acall(intput)
+    print('faq input', input)
+    return faq_chain.arun(input)
 
 #  商品推荐 llMchain
 product_loader = CSVLoader(file_path='static/faq/ecommerce_products.csv')
@@ -127,13 +134,11 @@ def search_order(input:str)->str:
 # print('res', res)
 # <coroutine object Chain.acall at 0x13755e820>
 
-# res = recommend_product('我想买一件衣服，想要在春天去公园穿，但是不知道哪个款式好看，你能帮我推荐一下吗？')
-# print('res', res)
 
 tools = [
+    faq,
     search_order,
     recommend_product,
-    faq
 ]
 
 memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
@@ -142,18 +147,16 @@ conversation_agent = initialize_agent(
     tools, 
     # 用OpenAI，不要用ChatOpenAI，会报错 Could not parse LLM output: `{text}`
     llm, 
+    # agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
     agent="conversational-react-description", 
     memory=memory, 
-    verbose=True
+    verbose=True,
+    streaming=True,
 )
 
-# question3 = "写一首关于月亮的诗歌"
-# answer3 = conversation_agent.run(question3)
+# question3 = "写一首关于大海的诗歌"
+# answer3 = conversation_agent.run('你好')
 # print('res', answer3)
-
-
-
-
 
 # zero-shot-react-description：零样本
 # agent = initialize_agent(tools, llm, agent="zero-shot-react-description", verbose=True)

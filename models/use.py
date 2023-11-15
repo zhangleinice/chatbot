@@ -10,7 +10,6 @@ import torchaudio
 import torch
 import scipy
 
-
 # device = f'cuda:{cuda.current_device()}' if cuda.is_available() else 'cpu'
 
 # Load Tokenizer and Model
